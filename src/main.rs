@@ -20,7 +20,7 @@ use battery::*;
 
 fn main() {
     env_logger::builder()
-        .filter_level(LevelFilter::Debug)
+        .filter_level(LevelFilter::Info)
         .init();
 
     let args = cli::Args::parse();
@@ -58,7 +58,7 @@ fn main() {
         let capacity = psc.get_capacity();
         let status = psc.get_status();
 
-        info!("current capacity: {} Status: {}", capacity, status);
+        debug!("current capacity: {} Status: {}", capacity, status);
 
         // This double check is necessary to don't perform the same action repeated times
         if status == "Charging" && last_notification_level != BatteryNotificationLevel::Charging {
@@ -89,11 +89,6 @@ fn main() {
                     _ => panic!("unexpected battery notification level"),
                 };
 
-                debug!(
-                    "last notification level: {}, current notification level: {}",
-                    last_notification_level, current_notification_level
-                );
-
                 if last_notification_level != current_notification_level {
                     last_notification_level = current_notification_level;
                     last_notification_handler.take().map(|h| h.close());
@@ -117,7 +112,7 @@ fn main() {
                     send_sound_notification(urgency.get_sound());
                 };
 
-                info!(
+                debug!(
                     "last notification level: {}, current notification level: {}",
                     last_notification_level, current_notification_level
                 );
