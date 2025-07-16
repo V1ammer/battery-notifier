@@ -45,5 +45,13 @@
       in {
         buildInputs = with pkgs; [rust-analyzer cargo rust-latest];
       }));
+    nixConfig = {
+      extra-substituters = [
+        "https://v1ammer-battery-notifier.cachix.org"
+      ];
+      extra-trusted-public-keys = [
+        "v1ammer-battery-notifier.cachix.org-1:jDieQb4tYwSmzt9/2xWlhDoaB3/IyfezVXW8uUGfRFc="
+      ];
+    };
   };
 }
