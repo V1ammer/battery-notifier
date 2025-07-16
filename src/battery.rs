@@ -1,6 +1,7 @@
 use chrono::Utc;
 use linuxver::version as get_linux_version;
 use serde::Deserialize;
+use std::path::Path;
 use std::{fmt, fs, ops::Index};
 
 pub struct PowerSupplyClass {
@@ -15,18 +16,8 @@ impl PowerSupplyClass {
             panic!("This program requires Linux 2.6 or higher");
         }
 
-        let class = match os_info::get().os_type() {
-            os_info::Type::Ubuntu => "BAT0",
-            _ => {
-                if kernel_version.major < 3
-                    || (kernel_version.major == 3 && kernel_version.minor < 19)
-                {
-                    "BAT0"
-                } else {
-                    "BAT1"
-                }
-            }
-        };
+        let bat0_exists = Path::new("/sys/class/power_supply/BAT0").is_dir();
+        let class = if bat0_exists { "BAT0" } else { "BAT1" };
 
         PowerSupplyClass {
             path: format!("/sys/class/power_supply/{}", class),
